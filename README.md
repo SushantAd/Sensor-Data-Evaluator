@@ -74,7 +74,62 @@ s3,NaN,NaN,NaN
 - Sensible tests are welcome
 
 
-Solution:
+# Solution:
 
-#Working ScreenShot:
+### Assumption
+1. Directory will only have csv files.
+2. CSV will always have a header and 2 columns of data in the format ``sensor-id, humidity``
+
+### Suggested Solution
+1. Idiomatic approach, using vanilla scala and FS2 [https://fs2.io/#/] (Reasoning: Build in IO operators working with streams)
+2. To avoid using mutable variables, I have used hash map which has fairly better access time and plus we have unique keys.
+3. Wrap certain heavy operations to Cats effects IO to run them lazily.
+4. Load all content at once, though we do read file content in 2 MB chunks.
+5. Traverse and process through data with a tail recursive approach.
+6. Use map to store sensorId and update values based on traversal.
+7. Evaluate statistics and generate responses.
+
+### Working Image:
+Data set: 3 million plus records.
+
 ![img.png](img.png)
+
+### Running
+
+You need to download and install sbt for this application to run.
+
+#### Pre-requisite
+Scala 2.13.10  
+SBT 1.8.2  
+Java 11 (This application works best with Java 11)  
+
+
+Once you have sbt installed, type/run the following command in the terminal:
+
+```bash
+sbt run
+or
+Run via IDE
+```
+
+#### Testing
+Please note change dirPath in ```ApplicationIntegrationTest``` based on the operating system being used  
+
+Mine is Windows:
+```private val dirPath = "src/test/resources/"```
+
+Similarly for Mac OS
+```private val dirPath = "src\test\resources\"```
+
+To run Unit test:
+```bash
+sbt test
+or
+Run test via IDE
+```
+![img_1.png](img_1.png)
+
+#### Extensions
+1. If we will be processing even larger data sets, we could think of using parallel computations, this however would need increase in cpu threads. 
+
+

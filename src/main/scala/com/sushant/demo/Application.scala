@@ -31,11 +31,11 @@ object Application extends IOApp {
   def sensorStatisticsProcessor(path: Path): IO[Unit] = {
     for{
       files <- directory(path).compile.toList
-      parsedFiles <- IO(files.map(path => parser(path).compile.toList))
+      parsedFiles <- IO.apply(files.map(path => parser(path).compile.toList))
       parsedResult <- parsedFiles.sequence
       allCsvContent = parsedResult.flatten
-      map <- IO(processContent(allCsvContent, HashMap.empty[String, SensorStatistics]))
-      highestHumidity <- findHighestAverageHumidity(map)
+      sensorStatisticsMap <- IO(processContent(allCsvContent, HashMap.empty[String, SensorStatistics]))
+      highestHumidity <- findHighestAverageHumidity(sensorStatisticsMap)
       measurementResult = highestHumidity.processingCount.copy(processedFiles = files.size)
       _ <- IO(generateResponse(measurementResult, highestHumidity.sensorStatisticsResult))
     } yield()
