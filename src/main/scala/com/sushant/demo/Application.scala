@@ -14,7 +14,7 @@ import scala.util.control.Exception.allCatch
 object Application extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
-    println("Please Enter Path:")
+    println("Please Enter Directory Path:")
     val input = scala.io.StdIn.readLine()
     val pathDir: Path = Path(input)
     sensorStatisticsProcessor(pathDir).as(ExitCode.Success)
@@ -82,5 +82,4 @@ object Application extends IOApp {
     println("sensor-id,min,avg,max")
     statisticsResult.foreach( res => println(res))
   }
-
 }
